@@ -1,6 +1,7 @@
 Jugador = {}
 Jugador.__index = Jugador
 
+
 -- =================== CONSTRUCTOR ===================
 
 function Jugador:Nuevo(x, y, img, v)
@@ -12,8 +13,17 @@ function Jugador:Nuevo(x, y, img, v)
 
     o.sprite = love.graphics.newImage(img)
 
-    o.ancho = o.sprite:getWidth()
-    o.alto = o.sprite:getHeight()
+    -- Tamaño que queremos que tenga el personaje
+    o.ancho = 125
+    o.alto = 125
+
+    -- Tamaño original de la imagen
+    local ancho_original = o.sprite:getWidth()
+    local alto_original = o.sprite:getHeight()
+
+    -- Calculamos cuánto escalar
+    o.escala_x = o.ancho / ancho_original
+    o.escala_y = o.alto / alto_original
 
     o.velocidad = v
 
@@ -51,10 +61,15 @@ function Jugador:Dibujar()
     love.graphics.draw(
         self.sprite,
         self.x,
-        self.y
+        self.y,
+        0,
+        self.escala_x,
+        self.escala_y
     )
 
 end
+
+
 -- =================== DEPURAR ===================
 
 function Jugador:Debug()
@@ -68,5 +83,6 @@ function Jugador:Debug()
     )
 
 end
+
 
 return Jugador
