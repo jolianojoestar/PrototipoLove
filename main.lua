@@ -22,60 +22,45 @@ local function dibujarIndicadorVerde()
     love.graphics.setColor(1, 1, 1, 1) -- Restaurar color
 end
 
-local jugador = Jugador:Nuevo(
-    100,
-    400,
-    "assets/Gandalf.png",
-    150
-)
+local jugador = Jugador:Nuevo(100,400,"assets/Gandalf.png",150)
 
-local enemigo1 = Enemigo:Nuevo(
-    400,
-    150,
-    "assets/Samurai.png",
-    4
-)
+local enemigo1 = Enemigo:Nuevo(400,150,"assets/Samurai.png",40)
 
-local enemigo2 = Enemigo:Nuevo(
-    130,
-    72,
-    "assets/Esqueleto.png",
-    8
-)
+local enemigo2 = Enemigo:Nuevo(130,72,"assets/Esqueleto.png",10)
 
-local enemigo3 = Enemigo:Nuevo(
-    30,
-    72,
-    "assets/Caballero.png",
-    12
-)
+local enemigo3 = Enemigo:Nuevo(30,72,"assets/Caballero.png",30)
 
 
 -- =================== COLISION ===================
 
-local function hayColision(
-    x1, y1, ancho1, alto1,
-    x2, y2, ancho2, alto2
-)
+local function hayColision(x1, y1, ancho1, alto1, x2, y2,ancho2,alto2)
 
-    return x1 < x2 + ancho2
-       and x2 < x1 + ancho1
-       and y1 < y2 + alto2
-       and y2 < y1 + alto1
+    return  x1<x2+ancho2    and
+            x2<x1+ancho1    and
+            y1<y2+alto2     and
+            y2<y1+alto1
 
 end
 
 
 local function colisionaJugadorEnemigo(jugador, enemigo)
 
+    -- Si el jugador tiene origen centrado, su esquina superior izquierda es:
+    local jugador_x = jugador.x - (jugador.origen_x or 0)
+    local jugador_y = jugador.y - (jugador.origen_y or 0)
+
+    -- Para el enemigo usamos sus coordenadas de hitbox calculadas
+    local enemigo_x = enemigo.hitbox_x or (enemigo.x - (enemigo.origen_x or 0))
+    local enemigo_y = enemigo.hitbox_y or (enemigo.y - (enemigo.origen_y or 0))
+
     return hayColision(
-        jugador.x,
-        jugador.y,
+        jugador_x,
+        jugador_y,
         jugador.ancho,
         jugador.alto,
 
-        enemigo.hitbox_x,
-        enemigo.hitbox_y,
+        enemigo_x,
+        enemigo_y,
         enemigo.ancho,
         enemigo.alto
     )
@@ -83,7 +68,7 @@ local function colisionaJugadorEnemigo(jugador, enemigo)
 end
 
 function love.load()
-    print("EL JUEGO ARRANCO")
+    
 end
 -- =================== ACTUALIZAR ===================
 
@@ -92,38 +77,16 @@ function love.update(dt)
     -- JUGADOR
     jugador:Actualizar(dt)
 
-
-    -- ENEMIGOS
-    enemigo1:Actualizar(jugador.x,jugador.y,100,dt)
-
-    enemigo2:Actualizar(jugador.x,jugador.y,100,dt)
-
-    enemigo3:Actualizar(jugador.x,jugador.y,100,dt)
-
+    -- Enemigos y ahora tiene seguir 
+    enemigo1:Actualizar(jugador, 125, dt)
+    enemigo2:Actualizar(jugador, 125, dt)
+    enemigo3:Actualizar(jugador, 120, dt)
 
     -- COLISIONES
     -- Activar bandera si hay contacto con cualquier enemigo
     hay_colision_debug = colisionaJugadorEnemigo(jugador, enemigo1)
                       or colisionaJugadorEnemigo(jugador, enemigo2)
                       or colisionaJugadorEnemigo(jugador, enemigo3)
-    if colisionaJugadorEnemigo(jugador, enemigo1) then
-        print("COLISION CON SAMURAI")
-    else
-        print("NO HAY COLISION CON SAMURAI")
-    end
-
-    if colisionaJugadorEnemigo(jugador, enemigo2) then
-        print("COLISION CON ESQUELETO")
-    else
-        print("NO HAY COLISION CON ESQUELETO")
-    end
-
-    if colisionaJugadorEnemigo(jugador, enemigo3) then
-        print("COLISION CON CABALLERO")
-    else
-        print("NO HAY COLISION CON CABALLERO")
-    end
-
 end
 
 

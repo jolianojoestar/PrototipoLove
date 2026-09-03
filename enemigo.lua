@@ -1,6 +1,7 @@
 Enemigo = {}
 Enemigo.__index = Enemigo
-
+-- Estos llamados de index si lo tuve que pedir por chatgpt porque
+-- todavía no estoy tan familiarizado con los tipos de datos de Lua y como crear clase etc
 
 -- =================== CONSTRUCTOR ===================
 
@@ -42,38 +43,9 @@ end
 
 -- =================== ACTUALIZAR ===================
 
-function Enemigo:Actualizar(x, y, a, dt)
+function Enemigo:Actualizar(jugador, a, dt)
 
-    local dist_x = math.abs(self.x - x)
-    local dist_y = math.abs(self.y - y)
-
-    if dist_x > dist_y then
-
-        if dist_x > a then
-
-            if self.x < x then
-                self.x = self.x + (self.velocidad * dt)
-
-            elseif self.x > x then
-                self.x = self.x - (self.velocidad * dt)
-            end
-
-        end
-
-    else
-
-        if dist_y > a then
-
-            if self.y < y then
-                self.y = self.y + (self.velocidad * dt)
-
-            elseif self.y > y then
-                self.y = self.y - (self.velocidad * dt)
-            end
-
-        end
-
-    end
+    self:seguirJugador(jugador, a, dt)
 
     -- Actualizar hitbox
     self.hitbox_x = self.x - self.origen_x
@@ -121,5 +93,25 @@ function Enemigo:Debug()
 
 end
 
+function Enemigo:seguirJugador(jugador, a, dt)
+
+    local dx = jugador.x - self.x
+    local dy = jugador.y - self.y
+
+    local distance = math.sqrt(dx * dx + dy * dy)
+
+    -- Si y solo si está más lejos que la distancia mínima
+    if distance > a then
+
+        -- Normalizamos la direccion
+        dx = dx / distance
+        dy = dy / distance
+
+        -- Move_and_slide del godot
+        self.x = self.x + dx * self.velocidad * dt
+        self.y = self.y + dy * self.velocidad * dt
+
+    end
+end
 
 return Enemigo
