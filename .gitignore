@@ -38,4 +38,6 @@ luac.out
 *.i*86
 *.x86_64
 *.hex
-
+*.love
+*.zip
+Prototipo1-v1.0-win64/
