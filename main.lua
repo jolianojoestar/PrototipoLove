@@ -25,16 +25,7 @@ local function dibujarIndicadorVerde()
     love.graphics.setColor(1, 1, 1, 1) -- Restaurar color
 end
 
-local jugador = Jugador:Nuevo(100,400,"assets/Gandalf.png",150)
-
-local enemigo1 = Enemigo:Nuevo(400,150,"assets/Samurai.png",40)
-
-local enemigo2 = Enemigo:Nuevo(130,72,"assets/Esqueleto.png",10)
-
-local enemigo3 = Enemigo:Nuevo(30,72,"assets/Caballero.png",30)
-local enemigos = {enemigo1,enemigo2,enemigo3}
-local proyectiles = {}
-
+local clickSFX = love.audio.newSource("assets/jump.mp3", "static")
 -- =================== COLISION ===================
 
 local function hayColision(x1, y1, ancho1, alto1, x2, y2,ancho2,alto2)
@@ -98,13 +89,23 @@ end
 function love.mousepressed(x, y, button)
     if button==1 then
         local proyectil = Proyectil:Nuevo(jugador.x, jugador.y, x, y)
-
         table.insert(proyectiles, proyectil)
+        clickSFX:play()
     end
 end
 -- === nuncca esta de mas que la tenga a mano===
 function love.load()
-    
+    jugador = Jugador:Nuevo(100,400,"assets/Gandalf.png",150)
+
+    enemigo1 = Enemigo:Nuevo(400,150,"assets/Samurai.png",40)
+
+    enemigo2 = Enemigo:Nuevo(130,72,"assets/Esqueleto.png",10)
+
+    enemigo3 = Enemigo:Nuevo(30,72,"assets/Caballero.png",30)
+    enemigos = {enemigo1,enemigo2,enemigo3}
+    proyectiles = {}
+
+    clickSFX = love.audio.newSource("assets/jump.mp3", "static")
 end
 -- =================== ACTUALIZAR ===================
 
@@ -186,7 +187,7 @@ function love.draw()
     love.graphics.print("Enemigos derrotados: " .. enemigos_derrotados, 10, 10)
     love.graphics.setColor(1, 1, 1)
     if enemigos_derrotados >= 3 then
-        love.graphics.setColor(0, 1, 0) -- Rojo
+        love.graphics.setColor(0, 1, 0) -- verde
         love.graphics.print("¡GANASTEEE!", 350, 300)
     end
     if hay_colision_debug then
