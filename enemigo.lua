@@ -107,7 +107,10 @@ function Enemigo:seguirJugador(jugador, a, dt)
         dx = dx / distance
         dy = dy / distance
 
-        -- Move_and_slide del godot
+        -- Move_and_slide del godot // esto pedí que me lo adaptara una IA
+        -- No me he familiarizado con el self y cambios ligeros. 
+        -- De hecho las clases son traidas y las adapté a medida que visualcode
+        -- me sugería los cambios solos con la ia que trae el programa
         self.x = self.x + dx * self.velocidad * dt
         self.y = self.y + dy * self.velocidad * dt
 
