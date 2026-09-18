@@ -34,4 +34,8 @@ function Enemigo:seguirJugador(jugador, a, dt)
     end
 end
 
+function Enemigo:Destruir()
+    if self.mundo and self.mundo:hasItem(self) then self.mundo:remove(self) end
+end
+
 return Enemigo
