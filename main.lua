@@ -21,6 +21,9 @@ function love.keypressed(key, scancode, isrepeat)
     if key == "return" then
         maquina_estados:cambiar("jugar")
     end
+    if maquina_estados.actual and maquina_estados.actual.keypressed then
+        maquina_estados.actual:keypressed(key)
+    end
 end
 
 -- =================== LOAD ===================
