@@ -59,7 +59,7 @@ function EstadoJugar:init()
     end
 
     -- Animación
-    self.ataque = Animacion.Crear("assets/power.png", 3, 16, 16, 6, false)
+    self.ataque = Animacion.Crear("assets/Power.png", 3, 16, 16, 6, false)
     self.ataque.activado = false
     self.ataque.spritehseet:setFilter("nearest", "nearest")
 end
