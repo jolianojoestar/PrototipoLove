@@ -3,6 +3,8 @@ Class = require 'lib.class'
 STI = require 'lib.sti'
 Camara = require 'camera'
 Bump = require 'lib.bump'
+Timer = require 'lib.timer'
+Signal = require 'lib.signal'
 -- Módulos y Clases globales
 require "jugador"
 require "enemigo"
@@ -13,3 +15,4 @@ require "estados.estadoJugar"
 require "estados.estadoTitulo"
 require "estados.maquinaEstados"
 require "estados.estadoDerrota"
+require "hud"

@@ -6,40 +6,67 @@ maquina_estados = nil
 -- =================== ENTRADA DE USUARIO ===================
 
 function love.mousepressed(x, y, button)
-    -- Delegar el clic al estado activo si este implementa mousepressed
-    if maquina_estados and maquina_estados.actual.mousepressed then
+    -- Delegar el clic al estado activo
+    if maquina_estados
+    and maquina_estados.actual
+    and maquina_estados.actual.mousepressed then
         maquina_estados.actual:mousepressed(x, y, button)
     end
 end
 
 function love.keypressed(key, scancode, isrepeat)
-    if not maquina_estados then return end
 
+    if not maquina_estados then
+        return
+    end
+
+    -- Volver al título
     if key == "escape" then
         maquina_estados:cambiar("titulo")
     end
+
+    -- Entrar a jugar
     if key == "return" then
         maquina_estados:cambiar("jugar")
     end
+
+    -- Activar / desactivar modo debug
+    if key == "f1" then
+        Signal.emit("modoDebug")
+        return
+    end
+
+    -- Delegar al estado activo
     if maquina_estados.actual and maquina_estados.actual.keypressed then
         maquina_estados.actual:keypressed(key)
     end
+
 end
 
 -- =================== LOAD ===================
 
 function love.load()
+
     love.window.setMode(800, 600)
     love.graphics.setDefaultFilter("nearest", "nearest", 1)
 
-    -- Instanciar la clase MaquinaEstado (en singular, como se definió)
+    -- Instanciar la máquina de estados
     maquina_estados = MaquinaEstado{
-        ['jugar'] = function () return EstadoJugar() end,
-        ['titulo'] = function () return EstadoTitulo() end,
-        ['derrota'] = function () return EstadoDerrota() end
+        ['jugar'] = function()
+            return EstadoJugar()
+        end,
+
+        ['titulo'] = function()
+            return EstadoTitulo()
+        end,
+
+        ['derrota'] = function()
+            return EstadoDerrota()
+        end
     }
 
-    maquina_estados:cambiar('titulo')
+    maquina_estados:cambiar("titulo")
+
 end
 
 -- =================== UPDATE ===================

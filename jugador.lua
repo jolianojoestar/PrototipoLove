@@ -26,6 +26,8 @@ function Jugador:init(x, y, img, v, mundo)
     self.anterior_x = self.x
     self.anterior_y = self.y
 
+    self.invulnerable = false
+    self.vidas = 3
     self.mundo = mundo
     if self.mundo then
         self.mundo:add(self, self.hitbox_x, self.hitbox_y, self.ancho, self.alto)
@@ -66,7 +68,8 @@ function Jugador:Colision()
         local objeto = hitboxes[i]
 
         if objeto ~= self then
-            if objeto.es_enemigo then
+            if not self.invulnerable and objeto.es_enemigo then
+                self.vidas = self.vidas - 1
                 return true
             elseif objeto.es_pared then
                 self.x = self.anterior_x
