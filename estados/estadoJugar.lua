@@ -1,7 +1,7 @@
 ventana = {
     ancho = 320,
     alto = 240,
-    escala = 4
+    escala = 3
 }
 -- =================== CLASE ESTADO JUGAR ===================
 EstadoJugar = Class{__includes = Estado}
@@ -13,7 +13,7 @@ function EstadoJugar:init()
     self.mapa = nil
     self.camara_principal = nil
     self.hud = nil
-
+    self.img_game_over = love.graphics.newImage("assets/SauronEye.png")
     love.window.setMode(
         ventana.ancho * ventana.escala,
         ventana.alto * ventana.escala
@@ -34,6 +34,7 @@ function EstadoJugar:init()
 
     self.hud = HUD()
 
+    
     -- =========================
     -- CARGAR COLISIONES DESDE TILED
     -- =========================
@@ -83,16 +84,18 @@ function EstadoJugar:init()
     self.derrota = false
     self.depurar = false
     self.enemigos_derrotados = 0
-
-    self.clickSFX = love.audio.newSource(
-        "assets/jump.mp3",
-        "static"
-    )
-
+    
     -- =========================
     -- SIGNALS
     -- =========================
+    Signal.register("jugadorGolpeado", function()
+        print("El jugador ha sido golpeado")
+    end)
 
+    Signal.register("jugadorMuerto", function()
+        print("El jugador ha muerto")
+        self.derrota = true
+    end)
     Signal.register("modoDebug", function()
         self.depurar = not self.depurar
     end)
@@ -108,7 +111,12 @@ function EstadoJugar:init()
         150,
         self.mundo
     )
-
+    
+    Signal.emit(
+    "actualizarVidas",
+    self.jugador.vidas
+    )
+    
     self.proyectiles = {}
 
     -- =========================
@@ -191,7 +199,7 @@ function EstadoJugar:mousepressed(x, y, button)
     end
 
     if button == 1 and not self.ataque.activado then
-
+        Signal.emit("jugadorDisparo", self.jugador.x, self.jugador.y)
         -- Coordenadas físicas → coordenadas del canvas virtual
         local canvas_x = x / ventana.escala
         local canvas_y = y / ventana.escala
@@ -223,8 +231,6 @@ function EstadoJugar:mousepressed(x, y, button)
             proyectil
         )
 
-        self.clickSFX:play()
-
         self.ataque.activado = true
         self.ataque.indice = 1
 
@@ -234,6 +240,7 @@ end
 
 function EstadoJugar:actualizar(dt)
 
+    Timer.update(dt)
     if self.victoria or self.derrota then
         return
     end
@@ -354,6 +361,7 @@ function EstadoJugar:actualizar(dt)
 
     if self.jugador:Colision() then
         self.derrota = true
+        Signal.emit("jugadorMuerto")
     end
 
 end
@@ -481,12 +489,41 @@ function EstadoJugar:dibujar()
         love.graphics.setColor(1, 1, 1)
 
     end
-
     -- =========================
     -- FIN DE LA CAMARA
     -- =========================
 
     self.camara_principal:detach()
+
+    -- =========================
+    -- PANTALLA DE DERROTA
+    -- =========================
+    if self.derrota then
+        love.graphics.setColor(1, 1, 1)
+        
+        -- Definimos la escala deseada (puedes cambiar el 3 por el tamaño que prefieras)
+        local escala = 3 
+        
+        local img_ancho = self.img_game_over:getWidth()
+        local img_alto = self.img_game_over:getHeight()
+
+        love.graphics.draw(
+            self.img_game_over,
+            ventana.ancho / 2,
+            ventana.alto / 2,
+            0,
+            escala,
+            escala,
+            img_ancho / 2,
+            img_alto
+        )
+    end
+    -- =========================
+    -- HUD FIJO
+    -- =========================
+
+    self.hud:Draw()
+    self.hud:DrawGameData()
 
     -- =========================
     -- MOSTRAR CANVAS
@@ -504,13 +541,6 @@ function EstadoJugar:dibujar()
         ventana.escala,
         ventana.escala
     )
-
-    -- =========================
-    -- HUD FIJO
-    -- =========================
-
-    self.hud:Draw()
-    self.hud:DrawGameData()
 
 end
 

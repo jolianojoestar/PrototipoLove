@@ -60,28 +60,45 @@ function Jugador:Actualizar(dt)
     self.hitbox_y = self.y - (self.alto/2)
     self.mundo:update(self, self.hitbox_x, self.hitbox_y, self.ancho, self.alto)
 end
+
+ -- =================================
 -- =================== Colision ===================
 function Jugador:Colision()
-    local hitboxes, cantidad = self.mundo:queryRect(self.hitbox_x, self.hitbox_y, self.ancho, self.alto)
+     local hitboxes, cantidad = self.mundo:queryRect(self.hitbox_x, self.hitbox_y, self.ancho, self.alto)
     
-    for i = 1, cantidad do
-        local objeto = hitboxes[i]
+     for i = 1, cantidad do
+         local objeto = hitboxes[i]
 
-        if objeto ~= self then
-            if not self.invulnerable and objeto.es_enemigo then
-                self.vidas = self.vidas - 1
-                return true
-            elseif objeto.es_pared then
-                self.x = self.anterior_x
-                self.y = self.anterior_y
-                self.hitbox_x = self.x - self.ancho/2
-                self.hitbox_y = self.y - self.alto/2
-                self.mundo:update(self, self.hitbox_x, self.hitbox_y, self.ancho, self.alto)
-            end
-        end
-    end
-    return false
-end
+         if objeto ~= self then
+             if not self.invulnerable and objeto.es_enemigo then
+                 -- Evento de daño
+                 Signal.emit("jugadorGolpeado")
+                 self.vidas = self.vidas - 1
+                 -- Actualizar HUD
+                 Signal.emit("actualizarVidas", self.vidas)
+                 self.invulnerable = true
+
+                 if self.vidas <= 0 then
+                    -- Evento de muerte
+                     Signal.emit("jugadorMuerto")
+                     
+                else
+                     -- Invulnerabilidad durante 1 segundo
+                     Timer.after(1, function()
+                         self.invulnerable = false
+                     end)
+                 end
+             elseif objeto.es_pared then
+                 self.x = self.anterior_x
+                 self.y = self.anterior_y
+                 self.hitbox_x = self.x - self.ancho/2
+                 self.hitbox_y = self.y - self.alto/2
+                 self.mundo:update(self, self.hitbox_x, self.hitbox_y, self.ancho, self.alto)
+             end
+         end
+     end
+     return false
+ end
 -- =================== RENDERIZADO ===================
 -- =================== RENDERIZADO ===================
 function Jugador:Dibujar()
