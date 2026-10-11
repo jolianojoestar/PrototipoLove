@@ -48,6 +48,8 @@ end
 
 function love.load()
 
+    math.randomseed(os.time()) -- <--- Esto asegura que math.random sea verdaderamente aleatorio cada vez que abres el juego
+    
     love.window.setMode(800, 600)
     love.graphics.setDefaultFilter("nearest", "nearest", 1)
 

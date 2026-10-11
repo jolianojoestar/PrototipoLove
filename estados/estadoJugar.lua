@@ -119,50 +119,14 @@ function EstadoJugar:init()
     
     self.proyectiles = {}
 
-    -- =========================
+ -- =========================
     -- ENEMIGOS
     -- =========================
-
-    self.lista_enemigos = {
-        {
-            x = math.random(50, 600),
-            y = math.random(50, 300),
-            sprite = "assets/Samurai.png",
-            vel = 40
-        },
-
-        {
-            x = math.random(50, 600),
-            y = math.random(50, 300),
-            sprite = "assets/Esqueleto.png",
-            vel = 10
-        },
-
-        {
-            x = math.random(50, 600),
-            y = math.random(50, 300),
-            sprite = "assets/Caballero.png",
-            vel = 30
-        }
+    self.enemigos = {
+        Enemigo.crear("samurai", math.random(50, 600), math.random(50, 300), self.mundo),
+        Enemigo.crear("esqueleto", math.random(50, 600), math.random(50, 300), self.mundo),
+        Enemigo.crear("caballero", math.random(50, 600), math.random(50, 300), self.mundo)
     }
-
-    self.enemigos = {}
-
-    for _, datos in ipairs(self.lista_enemigos) do
-
-        table.insert(
-            self.enemigos,
-            Enemigo(
-                datos.x,
-                datos.y,
-                datos.sprite,
-                datos.vel,
-                self.mundo
-            )
-        )
-
-    end
-
     -- =========================
     -- ANIMACION
     -- =========================
