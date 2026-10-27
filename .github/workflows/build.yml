@@ -11,20 +11,10 @@ jobs:
       - name: Descargar el código del repositorio
         uses: actions/checkout@v4
 
-      - name: Configurar Node.js
-        uses: actions/setup-node@v4
+      - name: Compilar con love.js (vía GitHub Container Registry)
+        uses: docker://ghcr.io/davidobot/love.js:latest
         with:
-          node-version: '18'
-
-      - name: Clonar love.js y preparar herramientas
-        run: |
-          git clone https://github.com/davidobot/love.js.git
-          cd love.js
-          npm install
-
-      - name: Compilar juego a Web
-        run: |
-          node love.js/cli.js juego.love web-build
+          args: juego.love web-build
 
       - name: Guardar la carpeta web generada
         uses: actions/upload-artifact@v4
