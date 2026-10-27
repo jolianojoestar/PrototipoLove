@@ -463,24 +463,47 @@ function EstadoJugar:dibujar()
     -- PANTALLA DE DERROTA
     -- =========================
     if self.derrota then
+        -- Fondo semitransparente oscuro
+        love.graphics.setColor(0, 0, 0, 0.7)
+        love.graphics.rectangle("fill", 0, 0, ventana.ancho, ventana.alto)
+
+        -- Texto de Derrota / Perdiste
+        love.graphics.setColor(1, 0.2, 0.2) -- Rojo brillante
+        love.graphics.printf("¡PERDISTE!", 0, 50, ventana.ancho, "center")
+
+        -- Dibujar la imagen de Game Over / Icono (SauronEye)
         love.graphics.setColor(1, 1, 1)
-        
-        -- Definimos la escala deseada (puedes cambiar el 3 por el tamaño que prefieras)
-        local escala = 3 
-        
+        local escala = 2 
         local img_ancho = self.img_game_over:getWidth()
         local img_alto = self.img_game_over:getHeight()
 
         love.graphics.draw(
             self.img_game_over,
             ventana.ancho / 2,
-            ventana.alto / 2,
+            ventana.alto / 2 + 10,
             0,
             escala,
             escala,
             img_ancho / 2,
-            img_alto
+            img_alto / 2
         )
+    end
+
+    
+    -- =========================
+    -- PANTALLA DE VICTORIA
+    -- =========================
+    if self.victoria then
+        -- Fondo semitransparente para oscurecer el juego de fondo
+        love.graphics.setColor(0, 0, 0, 0.7)
+        love.graphics.rectangle("fill", 0, 0, ventana.ancho, ventana.alto)
+
+        -- Texto de Victoria
+        love.graphics.setColor(1, 0.8, 0.2) -- Color dorado/amarillo
+        love.graphics.printf("¡VICTORIA!", 0, 70, ventana.ancho, "center")
+        
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.printf("Presiona Esc para volver", 0, 120, ventana.ancho, "center")
     end
     -- =========================
     -- HUD FIJO

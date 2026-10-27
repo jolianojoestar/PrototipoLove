@@ -23,12 +23,7 @@ function love.keypressed(key, scancode, isrepeat)
 
     -- Volver al título
     if key == "escape" then
-        maquina_estados:cambiar("titulo")
-    end
-
-    -- Entrar a jugar
-    if key == "return" then
-        Maquina_estados:cambiar("jugar")
+        Maquina_estados:cambiar("titulo")
     end
 
     -- Activar / desactivar modo debug
