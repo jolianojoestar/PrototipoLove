@@ -1,0 +1,23 @@
+name: Compilar juego a Web (WebGL)
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código del repositorio
+        uses: actions/checkout@v4
+
+      - name: Compilar con love.js (en la nube)
+        uses: docker://davidobot/love.js:latest
+        with:
+          args: juego.love web-build
+
+      - name: Guardar la carpeta web generada
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: web-build/
